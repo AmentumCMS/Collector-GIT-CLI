@@ -85,6 +85,19 @@ jobs:
         run: |
           echo -e "Directory Contents\n$(ls -1AhsS /mnt/${{ matrix.repo }}/*)"
           echo -e "\n\nDirectory Size\n$(du -hd1 /mnt/${{ matrix.repo }}/*| awk 'NR==2 {print $4}')"
+
+      - name: ISO Table of contents
+        run: | 
+          cd /mnt
+          tree ${{ env.REPO }} \
+            | tee ${{ env.REPO }}/${{ env.REPO }}-${{ matrix.os }}-${{ needs.Date.outputs.Date }}.iso.txt
+
+      - name: Upload ISO ToC artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ env.REPO }}-${{ matrix.os }}-${{ needs.Date.outputs.Date }}.iso.txt
+          path: /mnt/${{ env.REPO }}/${{ env.REPO }}-${{ matrix.os }}-${{ needs.Date.outputs.Date }}.iso.txt
+          if-no-files-found: error
   
       - name: TARchive Output
         run: |
