@@ -4,3 +4,6 @@
 [submodule "git-lfs-source"]
 	path = git-lfs-source
 	url = https://github.com/git-lfs/git-lfs.git
+[submodule "git-windows-source"]
+	path = git-windows-source
+	url = https://github.com/git-for-windows/git.git

@@ -15,8 +15,10 @@ jobs:
       - name: Get current date
         id: DATE
         run: |
+          echo "Setting Date"
           echo "DATE=$(date '+%Y%m%d-%H%M')" >> $GITHUB_OUTPUT
-          echo -e "\n$GITHUB_OUTPUT\n"
+          echo -e "\nWrote to file:\n$GITHUB_OUTPUT\n"
+          echo "Values:"
           cat $GITHUB_OUTPUT
 
   Collect-RPMs:
@@ -141,11 +143,23 @@ jobs:
           git bundle create --progress ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.bundle --all
           ls -Alht *
 
+      - name: Generate Hash
+        run: |
+          sha256sum -b ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.bundle | tee \
+            ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.bundle.sha
+
       - name: Upload bundle
         uses: actions/upload-artifact@v4
         with:
           name: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.bundle
           path: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.bundle
+
+      - name: Upload bundle hash
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.bundle.sha
+          path: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.bundle.sha
+          if-no-files-found: error
 
   MakeISO:
     runs-on: ubuntu-24.04
@@ -170,9 +184,9 @@ jobs:
           merge-multiple: true
           path: ISO
 
-      - name: Download k9s CLI Binaries
+      - name: Download Windows GIT Binaries
         run: |
-          export REPO="derailed/k9s"
+          export REPO="git-for-windows/git"
           export DEST="ISO/binaries"
           echo -e "\nWorking with github repo $REPO"
           echo -e "Listing releases"
@@ -180,7 +194,7 @@ jobs:
           echo -e "\nDownloading binaries"
           mkdir -p $DEST
           echo -e "\nDownloading Latest to $DEST"
-          gh release download -p "*" -D $DEST -R $REPO
+          gh release download -p "Git*.exe" -D $DEST -R $REPO
           echo -e "\nDownloaded to $DEST"
           ls -Alht $DEST
 
