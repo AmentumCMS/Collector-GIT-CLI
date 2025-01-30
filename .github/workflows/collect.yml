@@ -68,7 +68,7 @@ jobs:
       - name: Sync Repo
         run: |
           reposync --download-metadata -m \
-            --repo=endpoint-${{ matrix.os }} \
+            --repo=endpoint \
             -p /mnt/${{ vars.COLLECTOR }}-EndPoint-${{ matrix.os }}-RPMS
 
             - name: Directory Contents
