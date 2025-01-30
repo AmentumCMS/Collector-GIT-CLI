@@ -57,7 +57,9 @@ jobs:
       - name: Register system and install packages
         run: |
           rm /etc/rhsm-host
-          subscription-manager register --username '${{ secrets.REDHAT_USER }}' --password '${{ secrets.REDHAT_PASS }}'
+          subscription-manager register \
+            --username '${{ secrets.RHDN_USER }}' \
+            --password '${{ secrets.RHDN_PASS }}'
           dnf install -y dnf-plugins-core yum-utils mkisofs isomd5sum tree procps-ng
           echo "Registering EndPoint Repo"
           dnf install https://packages.endpointdev.com/rhel/${{ matrix.os }}/main/x86_64/endpoint-repo.noarch.rpm
