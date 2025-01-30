@@ -78,13 +78,13 @@ jobs:
 
       - name: Show Consumption
         run: |
-          echo -e "Disk Usage $(du -chs /mnt/${{ env.REPO }})\n"
-          echo -e "Disk Space $(df -h /mnt/)"
+          echo -e "Disk Usage:\n$(du -chs /mnt/${{ env.REPO }})\n"
+          echo -e "Disk Space:\n$(df -h /mnt/${{ env.REPO }})"
 
       - name: Directory Contents
         run: |
-          echo -e "Directory Contents\n$(ls -lAhS /mnt/*)"
-          echo -e "\n\nDirectory Size\n$(du -hd1 /mnt/*)"
+          echo -e "Directory Contents\n$(ls -lAhsS /mnt/*)"
+          echo -e "\n\nDirectory Size\n$(du -hd1 /mnt/*| awk 'NR==2 {print $4}')"
   
       - name: TARchive Output
         run: |
@@ -99,7 +99,7 @@ jobs:
             /mnt/${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz.sha
 
       - name: List files 
-        run: ls -Alh /mnt/${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz*
+        run: ls -1sSh /mnt/${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz*
 
       - name: Upload TARchive
         uses: actions/upload-artifact@v4
@@ -196,23 +196,23 @@ jobs:
           gh release list -R $REPO
           echo -e "\nDownloading binaries"
           mkdir -p $DEST
-          echo -e "\nDownloading Latest to $DEST"
+          echo -e "Downloading Latest to $DEST"
           gh release download \
             -p "Git*bit.exe" -p "Port*.exe" \
             -D $DEST -R $REPO
-          echo -e "\nDownloaded to $DEST"
-          ls -Alht $DEST
+          echo -e "Downloaded to $DEST\n"
+          echo -e "Downloaded Files:\n$(ls -1sSh $DEST)"
 
       - name: Copy Markdowns to ISO
         run: cp -v *.md ISO/
 
       - name: Show Artifacts
-        run: ls -Alh ISO/*
+        run: ls -1sSh ISO/*
 
       - name: Generate Artifact Hash File
         run: |
           cd ISO
-          sha256sum -b ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}* | tee \
+          sha256sum -b * | tee \
             ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.sha
 
       - name: Upload Artifact Hash File
@@ -223,7 +223,7 @@ jobs:
 
       - name: Make ISO
         run: |
-          mkisofs -J -R -v -T -l \
+          mkisofs -r -v -l \
             -V '${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}' \
             -A '${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}' \
             -o ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso \
@@ -238,7 +238,7 @@ jobs:
             ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso.sha
 
       - name: Show ISO & Hash
-        run: ls -Alh *.iso*
+        run: ls -Alht *.iso*
 
       - name: Upload ISO
         uses: actions/upload-artifact@v4
@@ -269,7 +269,7 @@ jobs:
           merge-multiple: true
 
       - name: Show Artifacts
-        run: ls -Alh ${{ vars.COLLECTOR }}-*.*
+        run: ls -Alht ${{ vars.COLLECTOR }}-*.*
 
       # Section to create a tag and release
       - name: Set up git
@@ -309,7 +309,7 @@ jobs:
           merge-multiple: true
 
       - name: Show Artifacts
-        run: ls -Alh ${{ vars.COLLECTOR }}-*.*
+        run: ls -Alht ${{ vars.COLLECTOR }}-*.*
 
       # Send Files to Sharepoint
       - name: Send Files to Sharepoint
