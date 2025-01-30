@@ -88,7 +88,8 @@ jobs:
         run: |
           tar -cv -Ipigz --remove-files \
             -f ${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz \
-            /mnt/${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS \
+            -C /mnt/
+            ${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS \
             | tee /mnt/${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz.txt
 
       - name: Generate Hash
