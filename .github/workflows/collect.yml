@@ -239,9 +239,8 @@ jobs:
 
       - name: ISO Table of contents
         run: |
-          cd ISO
-          tree \
-            | tee ${{ vars.COLLECTOR }}--${{ needs.Date.outputs.Date }}.iso.txt
+          tree ISO \
+            | tee ISO/${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso.txt
 
       - name: Upload ISO ToC artifact
         uses: actions/upload-artifact@v4
