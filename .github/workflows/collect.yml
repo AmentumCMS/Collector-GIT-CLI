@@ -69,7 +69,7 @@ jobs:
         run: |
           reposync --download-metadata -m \
             --repo=${{ matrix.repo }} \
-            -p /mnt/${{ matrix.repo }}
+            -p /mnt/
 
       - name: Unregister system
         run: subscription-manager unregister
@@ -87,7 +87,7 @@ jobs:
       - name: TARchive Skopeo Output
         run: |
           tar -cv -Ipigz --remove-files -C /mnt/ \
-            -f ${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz \
+            -f /mnt/${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz \
             ${{ matrix.repo }} \
             | tee /mnt/${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz.txt
 
