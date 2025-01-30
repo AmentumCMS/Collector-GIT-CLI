@@ -10,4 +10,4 @@ In this case, it collects the source code repositories and the associated contai
 
 - Endpoint Dev Repo Git CLI RPMS
 - Git CLI latest release artifacts
-- 
+- Git for Windows latest release artifacts
