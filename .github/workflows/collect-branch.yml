@@ -78,13 +78,13 @@ jobs:
 
       - name: Show Consumption
         run: |
-          echo -e "Disk Usage:\n$(du -chs /mnt/${{ env.REPO }})\n"
-          echo -e "Disk Space:\n$(df -h /mnt/${{ env.REPO }})"
+          echo -e "Disk Usage:\n$(du -chs /mnt/${{ matrix.repo }})\n"
+          echo -e "\nDisk Space:\n$(df -h /mnt/${{ matrix.repo }})"
 
       - name: Directory Contents
         run: |
-          echo -e "Directory Contents\n$(ls -lAhsS /mnt/*)"
-          echo -e "\n\nDirectory Size\n$(du -hd1 /mnt/*| awk 'NR==2 {print $4}')"
+          echo -e "Directory Contents\n$(ls -1AhsS /mnt/${{ matrix.repo }}/*)"
+          echo -e "\n\nDirectory Size\n$(du -hd1 /mnt/${{ matrix.repo }}/*| awk 'NR==2 {print $4}')"
   
       - name: TARchive Output
         run: |
