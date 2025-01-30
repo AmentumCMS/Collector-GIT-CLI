@@ -197,7 +197,9 @@ jobs:
           echo -e "\nDownloading binaries"
           mkdir -p $DEST
           echo -e "\nDownloading Latest to $DEST"
-          gh release download -p "Git*.exe" -D $DEST -R $REPO
+          gh release download \
+            -p "Git*bit.exe" -p "Port*.exe" \
+            -D $DEST -R $REPO
           echo -e "\nDownloaded to $DEST"
           ls -Alht $DEST
 
