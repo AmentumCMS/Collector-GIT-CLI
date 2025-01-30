@@ -239,7 +239,7 @@ jobs:
 
       - name: ISO Table of contents
         run: |
-          cd /ISO
+          cd ISO
           tree ${{ matrix.repo }} \
             | tee ${{ matrix.repo }}/${{ matrix.repo }}-${{ matrix.os }}-${{ needs.Date.outputs.Date }}.iso.txt
 
