@@ -60,7 +60,7 @@ jobs:
           subscription-manager register \
             --username '${{ secrets.RHDN_USER }}' \
             --password '${{ secrets.RHDN_PASS }}'
-          dnf install -y dnf-plugins-core yum-utils mkisofs isomd5sum tree procps-ng
+          dnf install -y dnf-plugins-core yum-utils mkisofs isomd5sum tree procps-ng pigz
           echo "Registering EndPoint Repo"
           dnf install -y https://packages.endpointdev.com/rhel/${{ matrix.os }}/main/x86_64/endpoint-repo.noarch.rpm
           dnf repolist
@@ -71,10 +71,18 @@ jobs:
             --repo=${{ matrix.repo }} \
             -p /mnt/${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS
 
+      - name: Unregister system
+        run: subscription-manager unregister
+
+      - name: Show Consumption
+        run: |
+          echo -e "Disk Usage $(du -chs /mnt/${{ env.REPO }})\n"
+          echo -e "Disk Space $(df -h /mnt/)"
+
       - name: Directory Contents
         run: |
-          echo -e "Directory Contents\n$(ls -lAhS *)"
-          echo -e "\n\nDirectory Size\n$(du -hd1)"
+          echo -e "Directory Contents\n$(ls -lAhS /mnt/*)"
+          echo -e "\n\nDirectory Size\n$(du -hd1 /mnt/*)"
   
       - name: TARchive Skopeo Output
         run: |
