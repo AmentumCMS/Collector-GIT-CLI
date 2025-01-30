@@ -68,49 +68,49 @@ jobs:
       - name: Sync Repo
         run: |
           reposync --download-metadata -m \
-            --repo=endpoint \
-            -p /mnt/${{ vars.COLLECTOR }}-EndPoint-${{ matrix.os }}-RPMS
+            --repo=${{ matrix.repo }} \
+            -p /mnt/${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS
 
-            - name: Directory Contents
-            run: |
-              echo -e "Directory Contents\n$(ls -lAhS *)"
-              echo -e "\n\nDirectory Size\n$(du -hd1)"
-    
-          - name: TARchive Skopeo Output
-            run: |
-              tar -cv -Ipigz --remove-files \
-                -f ${{ vars.COLLECTOR }}-EndPoint-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz \
-                ${{ vars.COLLECTOR }}-EndPoint-${{ matrix.os }}-RPMS \
-              | tee ${{ vars.COLLECTOR }}-EndPoint-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz.txt
-    
-          - name: Generate Hash
-            run: |
-              sha256sum -b ${{ vars.COLLECTOR }}-EndPoint-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz  | tee \
-                ${{ vars.COLLECTOR }}-EndPoint-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz.sha
+      - name: Directory Contents
+        run: |
+          echo -e "Directory Contents\n$(ls -lAhS *)"
+          echo -e "\n\nDirectory Size\n$(du -hd1)"
+  
+      - name: TARchive Skopeo Output
+        run: |
+          tar -cv -Ipigz --remove-files \
+            -f ${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz \
+            ${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS \
+          | tee ${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz.txt
 
-          - name: List files 
-            run: ls -Alh ${{ vars.COLLECTOR }}-EndPoint-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz*
-    
-          - name: Upload TARchive
-            uses: actions/upload-artifact@v4
-            with:
-              name: ${{ vars.COLLECTOR }}-EndPoint-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz
-              path: ${{ vars.COLLECTOR }}-EndPoint-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz
-              if-no-files-found: error
-    
-          - name: Upload TARchive SHA
-            uses: actions/upload-artifact@v4
-            with:
-              name: ${{ vars.COLLECTOR }}-EndPoint-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz.sha
-              path: ${{ vars.COLLECTOR }}-EndPoint-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz.sha
-              if-no-files-found: error
-    
-          - name: Upload TARchive ToC
-            uses: actions/upload-artifact@v4
-            with:
-              name: ${{ vars.COLLECTOR }}-EndPoint-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz.txt
-              path: ${{ vars.COLLECTOR }}-EndPoint-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz.txt
-              if-no-files-found: error
+      - name: Generate Hash
+        run: |
+          sha256sum -b ${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz  | tee \
+            ${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz.sha
+
+      - name: List files 
+        run: ls -Alh ${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz*
+
+      - name: Upload TARchive
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz
+          path: ${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz
+          if-no-files-found: error
+
+      - name: Upload TARchive SHA
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz.sha
+          path: ${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz.sha
+          if-no-files-found: error
+
+      - name: Upload TARchive ToC
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz.txt
+          path: ${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz.txt
+          if-no-files-found: error
 
   Code:
     needs: [Date]
@@ -244,6 +244,7 @@ jobs:
       - name: Show Artifacts
         run: ls -Alh ${{ vars.COLLECTOR }}-*.*
 
+      # Section to create a tag and release
       - name: Set up git
         run: |
           git config user.name "$(git log -n 1 --pretty=format:%an)"
@@ -283,6 +284,7 @@ jobs:
       - name: Show Artifacts
         run: ls -Alh ${{ vars.COLLECTOR }}-*.*
 
+      # Send Files to Sharepoint
       - name: Send Files to Sharepoint
         uses: amentumcms/sharepoint-file-upload-action@pappasjfed-patch-1
         with:
