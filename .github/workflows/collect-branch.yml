@@ -240,14 +240,14 @@ jobs:
       - name: ISO Table of contents
         run: |
           cd ISO
-          tree ${{ matrix.repo }} \
-            | tee ${{ matrix.repo }}/${{ matrix.repo }}-${{ matrix.os }}-${{ needs.Date.outputs.Date }}.iso.txt
+          tree \
+            | tee ${{ vars.COLLECTOR }}--${{ needs.Date.outputs.Date }}.iso.txt
 
       - name: Upload ISO ToC artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ${{ matrix.repo }}-${{ matrix.os }}-${{ needs.Date.outputs.Date }}.iso.txt
-          path: /ISO/${{ matrix.repo }}/${{ matrix.repo }}-${{ matrix.os }}-${{ needs.Date.outputs.Date }}.iso.txt
+          name: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso.txt
+          path: /ISO/${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso.txt
           if-no-files-found: error
 
       - name: Make ISO
