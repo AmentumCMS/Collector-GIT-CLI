@@ -78,13 +78,15 @@ jobs:
 
       - name: Show Consumption
         run: |
-          echo -e "Disk Usage:\n$(du -chs /mnt/${{ matrix.repo }})\n"
-          echo -e "\nDisk Space:\n$(df -h /mnt/${{ matrix.repo }})"
+          cd /mnt
+          echo -e "Disk Usage:\n$(du -chs ${{ matrix.repo }})\n"
+          echo -e "\nDisk Space:\n$(df -h ${{ matrix.repo }})"
 
       - name: Directory Contents
         run: |
-          echo -e "Directory Contents\n$(ls -1AhsS /mnt/${{ matrix.repo }}/*)"
-          echo -e "\n\nDirectory Size\n$(du -hd1 /mnt/${{ matrix.repo }}/*| awk 'NR==2 {print $4}')"
+          cd /mnt
+          echo -e "Directory Contents\n$(ls -1AhsS ${{ matrix.repo }}/*)"
+          echo -e "\n\nDirectory Size\n$(du -hd1 ${{ matrix.repo }}/*| awk 'NR==2 {print $4}')"
 
       - name: ISO Table of contents
         run: | 
@@ -101,15 +103,17 @@ jobs:
   
       - name: TARchive Output
         run: |
-          tar -cv -Ipigz --remove-files -C /mnt/ \
-            -f /mnt/${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz \
+          cd /mnt
+          tar -cv -Ipigz --remove-files \
+            -f ${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz \
             ${{ matrix.repo }} \
-            | tee /mnt/${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz.txt
+            | tee ${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz.txt
 
       - name: Generate Hash
         run: |
-          sha256sum -b /mnt/${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz  | tee \
-            /mnt/${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz.sha
+          cd /mnt
+          sha256sum -b ${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz  | tee \
+            ${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz.sha
 
       - name: List files 
         run: ls -1sSh /mnt/${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz*
