@@ -88,36 +88,36 @@ jobs:
         run: |
           tar -cv -Ipigz --remove-files \
             -f ${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz \
-            ${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS \
-          | tee ${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz.txt
+            /mnt/${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS \
+            | tee /mnt/${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz.txt
 
       - name: Generate Hash
         run: |
-          sha256sum -b ${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz  | tee \
-            ${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz.sha
+          sha256sum -b /mnt/${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz  | tee \
+            /mnt/${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz.sha
 
       - name: List files 
-        run: ls -Alh ${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz*
+        run: ls -Alh /mnt/${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz*
 
       - name: Upload TARchive
         uses: actions/upload-artifact@v4
         with:
           name: ${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz
-          path: ${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz
+          path: /mnt/${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz
           if-no-files-found: error
 
       - name: Upload TARchive SHA
         uses: actions/upload-artifact@v4
         with:
           name: ${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz.sha
-          path: ${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz.sha
+          path: /mnt/${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz.sha
           if-no-files-found: error
 
       - name: Upload TARchive ToC
         uses: actions/upload-artifact@v4
         with:
           name: ${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz.txt
-          path: ${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz.txt
+          path: /mnt/${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz.txt
           if-no-files-found: error
 
   Code:
