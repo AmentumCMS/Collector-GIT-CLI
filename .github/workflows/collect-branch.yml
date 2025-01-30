@@ -86,7 +86,7 @@ jobs:
           echo -e "Directory Contents\n$(ls -lAhS /mnt/*)"
           echo -e "\n\nDirectory Size\n$(du -hd1 /mnt/*)"
   
-      - name: TARchive Skopeo Output
+      - name: TARchive Output
         run: |
           tar -cv -Ipigz --remove-files -C /mnt/ \
             -f /mnt/${{ vars.COLLECTOR }}-${{ matrix.repo }}-${{ matrix.os }}-RPMS-${{ needs.Date.outputs.Date }}.tgz \
@@ -128,6 +128,9 @@ jobs:
     steps:
       - name: Check out repository code
         uses: actions/checkout@v4
+        with:
+          submodules: true
+          lfs: true
 
       - name: Setup Git
         run: |
