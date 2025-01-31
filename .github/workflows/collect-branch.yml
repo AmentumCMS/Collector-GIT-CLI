@@ -297,7 +297,7 @@ jobs:
           merge-multiple: true
 
       - name: Show Artifacts
-        run: ls -Alht ${{ vars.COLLECTOR }}-*.*
+        run: ls -sS1ht ${{ vars.COLLECTOR }}*
 
       # Section to create a tag and release
   Sharepoint:
@@ -313,6 +313,6 @@ jobs:
           merge-multiple: true
 
       - name: Show Artifacts
-        run: ls -Alht ${{ vars.COLLECTOR }}-*.*
+        run: ls -Alht ${{ vars.COLLECTOR }}*
 
       # Send Files to Sharepoint

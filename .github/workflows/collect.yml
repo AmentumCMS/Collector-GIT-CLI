@@ -297,7 +297,7 @@ jobs:
           merge-multiple: true
 
       - name: Show Artifacts
-        run: ls -Alht ${{ vars.COLLECTOR }}-*.*
+        run: ls -sS1ht ${{ vars.COLLECTOR }}*
 
       # Section to create a tag and release
       - name: Set up git
@@ -322,7 +322,7 @@ jobs:
           tag_name: ${{ needs.Date.outputs.Date }}
           make_latest: true
           files: |
-            ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}*.*
+            ${{ vars.COLLECTOR }}*
 
   Sharepoint:
     runs-on: ubuntu-24.04
@@ -337,13 +337,13 @@ jobs:
           merge-multiple: true
 
       - name: Show Artifacts
-        run: ls -Alht ${{ vars.COLLECTOR }}-*.*
+        run: ls -Alht ${{ vars.COLLECTOR }}*
 
       # Send Files to Sharepoint
       - name: Send Files to Sharepoint
         uses: amentumcms/sharepoint-file-upload-action@pappasjfed-patch-1
         with:
-          file_path: "${{ vars.COLLECTOR }}-*.*"
+          file_path: "${{ vars.COLLECTOR }}*"
           host_name: ${{ secrets.SHAREPOINT_HOST }}
           site_name: ${{ secrets.SHAREPOINT_SITE }}
           upload_path: '${{ secrets.SHAREPOINT_BASEPATH }}/${{ vars.COLLECTOR }}/${{ needs.Date.outputs.Date }}'
