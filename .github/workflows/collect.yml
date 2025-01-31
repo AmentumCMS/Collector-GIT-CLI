@@ -160,7 +160,7 @@ jobs:
       - name: Bundle Repo1 code base for ${{ vars.COLLECTOR }}
         run: |
           git bundle create --progress ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.bundle --all
-          ls -Alht *
+          ls -sS1h *
 
       - name: Generate Hash
         run: |
@@ -266,7 +266,7 @@ jobs:
             ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.iso.sha
 
       - name: Show ISO & Hash
-        run: ls -Alht *.iso*
+        run: ls -sS1h *.iso*
 
       - name: Upload ISO
         uses: actions/upload-artifact@v4
@@ -297,7 +297,7 @@ jobs:
           merge-multiple: true
 
       - name: Show Artifacts
-        run: ls -Alht ${{ vars.COLLECTOR }}-*.*
+        run: ls -sS1h ${{ vars.COLLECTOR }}*
 
       # Section to create a tag and release
       - name: Set up git
@@ -322,7 +322,7 @@ jobs:
           tag_name: ${{ needs.Date.outputs.Date }}
           make_latest: true
           files: |
-            ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}*.*
+            ${{ vars.COLLECTOR }}*
 
   Sharepoint:
     runs-on: ubuntu-24.04
@@ -337,13 +337,13 @@ jobs:
           merge-multiple: true
 
       - name: Show Artifacts
-        run: ls -Alht ${{ vars.COLLECTOR }}-*.*
+        run: ls -sS1h ${{ vars.COLLECTOR }}*
 
       # Send Files to Sharepoint
       - name: Send Files to Sharepoint
         uses: amentumcms/sharepoint-file-upload-action@pappasjfed-patch-1
         with:
-          file_path: "${{ vars.COLLECTOR }}-*.*"
+          file_path: "${{ vars.COLLECTOR }}*"
           host_name: ${{ secrets.SHAREPOINT_HOST }}
           site_name: ${{ secrets.SHAREPOINT_SITE }}
           upload_path: '${{ secrets.SHAREPOINT_BASEPATH }}/${{ vars.COLLECTOR }}/${{ needs.Date.outputs.Date }}'
