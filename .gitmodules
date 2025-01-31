@@ -1,3 +1,9 @@
-[submodule "k9s-source"]
-	path = k9s-source
-	url = https://github.com/derailed/k9s.git
+[submodule "git-source"]
+	path = git-source
+	url = https://github.com/git/git.git
+[submodule "git-lfs-source"]
+	path = git-lfs-source
+	url = https://github.com/git-lfs/git-lfs.git
+[submodule "git-windows-source"]
+	path = git-windows-source
+	url = https://github.com/git-for-windows/git.git
