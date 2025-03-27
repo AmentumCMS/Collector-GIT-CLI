@@ -21,6 +21,42 @@ jobs:
           echo "Values:"
           cat $GITHUB_OUTPUT
 
+  Skopeo:
+    needs: [Date]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository code
+        uses: actions/checkout@v4
+
+      - name: Install Skopeo
+        run: |
+          sudo apt-get update -y
+          sudo apt-get install -y skopeo pigz
+
+      - name: Run Skopeo Sync
+        run: |
+          skopeo sync --scoped \
+              --src yaml --dest dir ${{ vars.COLLECTOR }}.yml ${{ vars.COLLECTOR }}
+
+      - name: Directory Contents
+        run: |
+          echo "Directory Contents"
+          ls -lAhS *
+          echo -e "\nDirectory Size"
+          du -hd1 
+
+      - name: TARchive Skopeo Output
+        run: |
+          tar -cv -Ipigz --remove-files \
+            -f ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.tgz ${{ vars.COLLECTOR }}
+          ls -Alh ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.tgz
+
+      - name: Upload TARchive
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.tgz
+          path: ${{ vars.COLLECTOR }}-${{ needs.Date.outputs.Date }}.tgz
+
   Collect-RPMs:
     needs: [Date]
     runs-on: ubuntu-24.04
@@ -182,7 +218,7 @@ jobs:
 
   MakeISO:
     runs-on: ubuntu-24.04
-    needs: [Date, Code, Collect-RPMs]
+    needs: [Date, Code, Skopeo, Collect-RPMs]
     permissions:
       contents: write
       pull-requests: read
@@ -297,7 +333,7 @@ jobs:
           merge-multiple: true
 
       - name: Show Artifacts
-        run: ls -sS1h ${{ vars.COLLECTOR }}*
+        run: ls -sS1ht ${{ vars.COLLECTOR }}*
 
       # Section to create a tag and release
       - name: Set up git
