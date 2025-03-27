@@ -33,6 +33,12 @@ jobs:
           sudo apt-get update -y
           sudo apt-get install -y skopeo pigz
 
+      - name: DSO Login
+        run: |
+          skopeo login registry1.dso.mil \
+            -u ${{ secrets.REGISTRY_USER }} \
+            -p ${{ secrets.REGISTRY_TOKEN }}
+
       - name: Run Skopeo Sync
         run: |
           skopeo sync --scoped \
