@@ -108,6 +108,11 @@ jobs:
           dnf install -y https://packages.endpointdev.com/rhel/${{ matrix.os }}/main/x86_64/endpoint-repo.noarch.rpm
           dnf repolist
 
+      - name: Repo ${{ env.REPO }} Info
+        run: |
+          echo -e "\nRepo ${{ env.REPO }} Info:\n"
+          dnf -y repoinfo ${{ env.REPO }} | tail -n +2
+
       - name: Sync Repo
         run: |
           reposync --download-metadata -m \
