@@ -8,6 +8,6 @@ It runs actions manually or on Push and creates a release.
 
 In this case, it collects the source code repositories and the associated container images via skopeo & gh for:
 
-- Endpoint Dev Repo Git CLI RPMS
-- Git CLI latest release artifacts
-- Git for Windows latest release artifacts
+- IronBank GIT CLI Container image
+- Docker Hub GIT CLI Container image
+- Git Hub GIT CLI latest release artifacts 

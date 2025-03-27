@@ -7,3 +7,6 @@
 [submodule "git-windows-source"]
 	path = git-windows-source
 	url = https://github.com/git-for-windows/git.git
+[submodule "git-lfs-ib-source"]
+	path = git-lfs-source
+	url = https://repo1.dso.mil/dsop/opensource/git-lfs/git-lfs.git
